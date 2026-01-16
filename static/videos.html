@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href="favicon.png" />
-    <title>ctOS | Media Feed</title>
+    <link rel="shortcut icon" id="tab-favicon" href="favicon.png" />
+    <title id="t">ctOS | Media Feed</title>
 
     <link rel="stylesheet" href="/assets/css/global.css?v=6" />
     <link rel="stylesheet" href="/assets/css/container.css?v=2" />
@@ -13,128 +13,77 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
-        body {
-            background: #0f0f0f;
-        }
-
-        /* SEARCH BAR */
-        .input-c {
-            display: flex;
-            gap: 10px;
-            padding: 20px 40px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .input-c input,
-        .input-c select {
-            background: #181818;
-            color: #fff;
-            border: 1px solid #333;
-            padding: 10px;
-            outline: none;
-        }
-
-        /* === FEED LAYOUT (JS POPULATES CONTENT) === */
-        .apps {
+        /* The grid container */
+        #video-container {
             display: grid;
-            gap: 24px;
-            padding: 40px;
-            max-width: 1400px;
-            margin: 0 auto;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            align-items: start;
+            /* Fixes the "50 feet below" issue */
         }
 
-        @media (min-width: 1200px) {
-            .apps {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
-
-        @media (max-width: 1199px) {
-            .apps {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        @media (max-width: 900px) {
-            .apps {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 600px) {
-            .apps {
-                grid-template-columns: 1fr;
-                padding: 20px;
-            }
-        }
-
-        /* === CARD CONTRACT (YOUR JS MUST MATCH THIS) === */
+        /* The individual card */
         .container-card {
-            background: rgba(20, 20, 20, 0.9);
-            border-radius: 12px;
-            overflow: hidden;
+            background: #000;
             border: 1px solid #222;
-            transition: transform .2s ease, border-color .2s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            /* Ensures card doesn't stretch to page bottom */
+            overflow: hidden;
         }
 
-        .container-card:hover {
-            transform: scale(1.02);
-            border-color: #ff003c;
-        }
-
+        /* 16:9 Aspect Ratio for the Video/Thumbnail */
         .wrapper {
             position: relative;
+            width: 100%;
             aspect-ratio: 16 / 9;
             background: #000;
         }
 
-        .wrapper img,
-        .wrapper video,
-        .wrapper iframe {
+        .wrapper img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .play-icon-overlay {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.4rem;
-            color: rgba(255, 255, 255, .7);
-            pointer-events: none;
-        }
-
+        /* Text info directly below image */
         .video-info {
-            padding: 14px;
+            padding: 10px;
+            background: #0a0a0a;
         }
 
         .video-title {
-            color: #fff;
-            font-size: 1.05rem;
-            font-weight: 600;
-            line-height: 1.3;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 4px;
+            font-family: sans-serif;
         }
 
         .video-category {
-            margin-top: 4px;
             color: #ff003c;
-            font-size: 0.8rem;
-            font-family: monospace;
+            font-size: 0.75rem;
+            font-family: 'Courier New', monospace;
             text-transform: uppercase;
+        }
+
+        /* Keep the play button centered */
+        .play-icon-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            z-index: 2;
         }
     </style>
 </head>
 
 <body>
-
     <div class="f-nav"></div>
 
     <div class="input-c">
@@ -147,7 +96,6 @@
         </select>
     </div>
 
-    <!-- JS OWNS THIS -->
     <div class="apps" id="video-container"></div>
 
     <script src="/assets/js/m1.js"></script>

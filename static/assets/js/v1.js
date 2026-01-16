@@ -1,4 +1,3 @@
-// THE VIDEO DATABASE
 const videoList = [
   {
     "name": "Half-Life Rap",
@@ -23,7 +22,7 @@ const videoList = [
 function renderVideos(filter = "all", query = "") {
   const container = document.getElementById("video-container");
   if (!container) return;
-  container.innerHTML = ""; // Clear grid for filtering/searching
+  container.innerHTML = ""; 
 
   videoList.forEach(video => {
     const matchesFilter = filter === "all" || video.categories.includes(filter);
@@ -31,27 +30,28 @@ function renderVideos(filter = "all", query = "") {
 
     if (matchesFilter && matchesQuery) {
       const card = document.createElement("div");
-      // Using 'column' and 'container-card' to match your existing CSS
-      card.className = "column"; 
+      // Use "container-card" instead of "column" to avoid unwanted height styles
+      card.className = "container-card"; 
+      
+      const videoId = `wrapper-${video.name.replace(/\s+/g, '')}`;
+
       card.innerHTML = `
-        <div class="container-card">
-          <div class="wrapper" id="wrapper-${video.name.replace(/\s+/g, '')}">
-            <img src="${video.image}" alt="${video.name}" loading="lazy" />
-            <div class="play-icon-overlay"><i class="fa-solid fa-play"></i></div>
-          </div>
-          <div class="container-info">
-            <p>${video.name}</p>
-          </div>
+        <div class="wrapper" id="${videoId}">
+            <div class="play-icon-overlay"><i class="fas fa-play"></i></div>
+            <img src="${video.image}" alt="${video.name}">
+        </div>
+        <div class="video-info">
+            <div class="video-title">${video.name}</div>
+            <div class="video-category">${video.categories[1] || 'SYSTEM_FILE'}</div>
         </div>
       `;
 
-      // ONLY LOAD THE VIDEO ON CLICK
       card.onclick = () => {
-        const wrapper = document.getElementById(`wrapper-${video.name.replace(/\s+/g, '')}`);
+        const wrapper = document.getElementById(videoId);
         if (video.link.includes("youtube.com") || video.link.includes("embed")) {
-          wrapper.innerHTML = `<iframe src="${video.link}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+          wrapper.innerHTML = `<iframe src="${video.link}${video.link.includes('?') ? '&' : '?'}autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
         } else {
-          wrapper.innerHTML = `<video controls autoplay><source src="${video.link}" type="video/mp4">Your browser does not support the video tag.</video>`;
+          wrapper.innerHTML = `<video controls autoplay><source src="${video.link}" type="video/mp4"></video>`;
         }
       };
       container.appendChild(card);
@@ -59,12 +59,10 @@ function renderVideos(filter = "all", query = "") {
   });
 }
 
-// SEARCH AND CATEGORY FILTERING
 function filterVideos() {
   const query = document.getElementById("search").value;
   const cat = document.getElementById("category").value;
   renderVideos(cat, query);
 }
 
-// Initial Load
 document.addEventListener("DOMContentLoaded", () => renderVideos());
