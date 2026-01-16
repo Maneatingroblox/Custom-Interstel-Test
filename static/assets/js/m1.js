@@ -22,14 +22,19 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.appendChild(script);
   }
 
+  // LETTUCE: Finding the navbar
   const nav = document.querySelector(".f-nav");
 
   if (nav) {
+    // THE SOLID BLACK SAUCE: Change background to a single color
+    nav.style.background = "black";
+    nav.style.display = "flex"; 
+    nav.style.alignItems = "center"; 
+
     const themeId = localStorage.getItem("theme");
     let LogoUrl = "/assets/media/favicon/main.png";
-    if (themeId === "Inverted") {
-      LogoUrl = "/assets/media/favicon/main-inverted.png";
-    }
+    
+    // ... rest of the code stays the same
     const html = `
       <div id="icon-container">
         <a class="icon" href="/./"><img alt="nav" id="INImg" src="${LogoUrl}"/></a>
@@ -48,6 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("dy", "false");
   }
 
+  
   // Theme Logic
   const themeid = localStorage.getItem("theme");
   const themeEle = document.createElement("link");
