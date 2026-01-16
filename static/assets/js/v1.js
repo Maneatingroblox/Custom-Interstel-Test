@@ -13,6 +13,18 @@ const videoList = [
     "categories": ["all", "cinematic"]
   },
   {
+    "name": "1 Hour of clean tiktoks Number 1",
+    "link": "https://www.youtube.com/embed/BQ9iEbKmhbg?si=URxyBmVPwIlaRSxV", 
+    "image": "/assets/media/videos/thumbnail/tiktok1hour.png",
+    "categories": ["all", "leaks"]
+  },
+  {
+    "name": "1 Hour of clean tiktoks Number 2",
+    "link": "https://www.youtube.com/embed/zesmT3C_qN4?si=z4OEdAomRI8keNCU", 
+    "image": "/assets/media/videos/thumbnail/tiktok1hour.png",
+    "categories": ["all", "leaks"]
+  },
+  {
     "name": "Watch Dogs 2 Rap",
     "link": "https://www.youtube.com/embed/o_hvTGcbbpM?si=imtB43OvzWSiiLiG",
     "image": "/assets/media/videos/thumbnail/videowatchdograp.webp",
