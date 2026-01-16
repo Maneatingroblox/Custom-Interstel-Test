@@ -13,38 +13,37 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
-        /* 1. The Container: Max width, centered, stacks vertically */
+        /* 1. The Grid: Keep your original grid layout */
         .apps {
-            max-width: 1400px;
-            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
             padding: 40px;
+            justify-content: center;
         }
 
-        /* 2. The Card: FULL WIDTH horizontal rectangle */
+        /* 2. The Card: Vertical stack (thumbnail on top, text below) */
         .container-card {
             background: rgba(20, 20, 20, 0.8);
             border: 1px solid #333;
             transition: 0.3s;
             display: flex;
-            flex-direction: row;
-            margin-bottom: 25px;
-            height: 200px;
-            overflow: hidden;
+            flex-direction: column;
+            height: fit-content;
         }
 
         .container-card:hover {
             border-color: #ff003c;
-            transform: translateX(5px);
+            transform: scale(1.02);
         }
 
-        /* 3. The Thumbnail: Fixed width on the LEFT */
+        /* 3. The Thumbnail: 16:9 aspect ratio at the TOP */
         .wrapper {
             position: relative;
-            width: 360px;
-            height: 100%;
+            width: 100%;
+            aspect-ratio: 16 / 9;
             background: #000;
             overflow: hidden;
-            flex-shrink: 0;
         }
 
         .wrapper img,
@@ -67,13 +66,10 @@
             pointer-events: none;
         }
 
-        /* 5. Text Area: Sits on the RIGHT */
+        /* 5. Text Area: Sits BELOW the thumbnail */
         .video-info {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            flex: 1;
+            padding: 15px;
+            text-align: left;
         }
 
         .video-title {
@@ -93,19 +89,6 @@
             font-family: 'Courier New', monospace;
             font-size: 0.8rem;
             text-transform: uppercase;
-        }
-
-        /* 6. Mobile: Stack vertically */
-        @media (max-width: 768px) {
-            .container-card {
-                flex-direction: column;
-                height: auto;
-            }
-
-            .wrapper {
-                width: 100%;
-                aspect-ratio: 16 / 9;
-            }
         }
     </style>
 </head>
