@@ -618,6 +618,24 @@
     "categories": ["all"]
   },
   {
+    "name": "FNAF 4",
+    "link": "https://irv77.github.io/hd_fnaf/4/",
+    "image": "/assets/media/icons/FNAF4.webp",
+    "categories": ["all"]
+  },
+  {
+    "name": "FNAF 5 / SISTER LOCATION",
+    "link": "https://irv77.github.io/hd_fnaf/sl/",
+    "image": "/assets/media/icons/FNAF5.webp",
+    "categories": ["all"]
+  },
+  {
+    "name": "FNAF Ultimate Custom Night UCN",
+    "link": "https://irv77.github.io/hd_fnaf/ucn/",
+    "image": "/assets/media/icons/UCN.png",
+    "categories": ["all"]
+  },
+  {
     "name": "FNAF Web",
     "link": "https://wellsousaaa.github.io/Five-Nights-at-Freddys-Web/",
     "image": "/assets/media/icons/FNAFWeb.webp",
@@ -963,6 +981,12 @@
     "name": "FNF - Lofi Mod",
     "link": "https://fnf.kdata1.com/lofi-funkin/2/",
     "image": "/assets/media/icons/lofi.webp",
+    "categories": ["all"]
+  },
+  {
+    "name": "FNF (MAIN VERSION) Friday Night Funkin'",
+    "link": "https://uploads.ungrounded.net/alternate/1528000/1528775_alternate_113347_r139.zip/?NewgroundsAPI_PublisherID=1&NewgroundsAPI_SandboxID=696a78971f97b&NewgroundsAPI_SessionID=&NewgroundsAPI_UserName=%26lt%3Bdeleted%26gt%3B&NewgroundsAPI_UserID=0&ng_username=%26lt%3Bdeleted%26gt%3B",
+    "image": "/assets/media/icons/fnf.webp",
     "categories": ["all"]
   },
   {
@@ -1626,8 +1650,8 @@
     "categories": ["all", "emu", "android"]
   },
   {
-    "name": "Akinator",
-    "link": "https://now.gg/iframe/snippet?app_pkg=com.digidust.elokence.akinator.freemium&partner=interstellar",
+    "name": "Akinator (WORKING)",
+    "link": "https://agarioonline.org/games/akinator.unblocked",
     "image": "/assets/media/icons/akinator.webp",
     "categories": ["all", "emu", "android"]
   },
