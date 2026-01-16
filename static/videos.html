@@ -13,41 +13,38 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
-        /* 1. The Grid: Control how many rectangles fit per row */
+        /* 1. The Container: Max width, centered, stacks vertically */
         .apps {
-            display: grid;
-            /* This prevents skinny columns by ensuring cards are at least 320px wide */
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
             padding: 40px;
-            justify-content: center;
         }
 
-        /* 2. The Card: Standard YouTube-style container */
+        /* 2. The Card: FULL WIDTH horizontal rectangle */
         .container-card {
             background: rgba(20, 20, 20, 0.8);
-            /* ctOS dark theme */
             border: 1px solid #333;
             transition: 0.3s;
             display: flex;
-            flex-direction: column;
-            height: fit-content;
-            /* Prevents the card from stretching vertically */
+            flex-direction: row;
+            margin-bottom: 25px;
+            height: 200px;
+            overflow: hidden;
         }
 
         .container-card:hover {
             border-color: #ff003c;
-            transform: scale(1.02);
+            transform: translateX(5px);
         }
 
-        /* 3. The Thumbnail: Force the 16:9 Rectangle */
+        /* 3. The Thumbnail: Fixed width on the LEFT */
         .wrapper {
             position: relative;
-            width: 100%;
-            /* This magic trick ensures a 16:9 aspect ratio regardless of image size */
-            aspect-ratio: 16 / 9;
+            width: 360px;
+            height: 100%;
             background: #000;
             overflow: hidden;
+            flex-shrink: 0;
         }
 
         .wrapper img,
@@ -56,7 +53,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            /* Crops the image to fill the rectangle without stretching */
         }
 
         /* 4. Play Icon Overlay */
@@ -71,10 +67,13 @@
             pointer-events: none;
         }
 
-        /* 5. Text Area: Sits neatly below the rectangle */
+        /* 5. Text Area: Sits on the RIGHT */
         .video-info {
-            padding: 15px;
-            text-align: left;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex: 1;
         }
 
         .video-title {
@@ -83,7 +82,6 @@
             font-weight: bold;
             font-size: 1.1rem;
             margin-bottom: 5px;
-            /* Limit to 2 lines like YouTube */
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -95,6 +93,19 @@
             font-family: 'Courier New', monospace;
             font-size: 0.8rem;
             text-transform: uppercase;
+        }
+
+        /* 6. Mobile: Stack vertically */
+        @media (max-width: 768px) {
+            .container-card {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .wrapper {
+                width: 100%;
+                aspect-ratio: 16 / 9;
+            }
         }
     </style>
 </head>
