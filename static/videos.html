@@ -13,10 +13,36 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
-        /* Custom styles for the video play button overlay */
+        /* Main Grid Layout */
+        .apps {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        /* The Card */
+        .container-card {
+            background: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            /* Stacks children vertically */
+        }
+
+        .container-card:hover {
+            transform: translateY(-5px);
+            border-color: #ff003c;
+        }
+
+        /* Top Section: Thumbnail/Video */
         .wrapper {
             position: relative;
-            cursor: pointer;
+            width: 100%;
+            aspect-ratio: 16/9;
             background: #000;
         }
 
@@ -25,10 +51,11 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 3rem;
-            color: rgba(255, 255, 255, 0.7);
+            font-size: 2.5rem;
+            color: rgba(255, 255, 255, 0.6);
             transition: 0.3s;
             pointer-events: none;
+            z-index: 2;
         }
 
         .container-card:hover .play-icon-overlay {
@@ -36,12 +63,46 @@
             transform: translate(-50%, -50%) scale(1.1);
         }
 
+        /* Bottom Section: Text Info */
+        .video-info {
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .video-title {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #eee;
+            margin: 0;
+            text-transform: uppercase;
+            /* Watch Dogs feel */
+            letter-spacing: 1px;
+        }
+
+        .video-meta {
+            font-size: 0.8rem;
+            color: #888;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .video-tag {
+            display: inline-block;
+            background: #1a1a1a;
+            color: #ff003c;
+            padding: 2px 8px;
+            font-size: 0.7rem;
+            border-radius: 4px;
+            width: fit-content;
+        }
+
         iframe,
         video {
             width: 100%;
             height: 100%;
-            aspect-ratio: 16/9;
             border: none;
+            display: block;
         }
     </style>
 </head>
@@ -50,7 +111,7 @@
     <div class="f-nav"></div>
 
     <div class="input-c">
-        <input type="text" id="search" onkeyup="filterVideos()" placeholder="Search System Files..." />
+        <input type="text" id="search" onkeyup="filterVideos()" placeholder="SEARCH_SYSTEM_FILES..." />
         <select id="category" onchange="filterVideos()">
             <option value="all">ALL_FILES</option>
             <option value="leaks">DATA_LEAKS</option>

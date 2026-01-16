@@ -3,19 +3,19 @@ const videoList = [
   {
     "name": "Half-Life Rap",
     "link": "https://www.youtube.com/embed/37cZaQne8IM?si=xEVAqA2XBAVy0m6G", 
-    "image": "/assets/media/icons/video1.webp",
+    "image": "/assets/media/videos/thumbnail/halfliferap.jpg",
     "categories": ["all", "leaks"]
   },
   {
-    "name": "ctOS_Central_System_Loop",
+    "name": "ctOS_Intro",
     "link": "/assets/media/videos/ctosintro.mp4",
-    "image": "/assets/media/icons/video2.webp",
+    "image": "/assets/media/videos/thumbnail/ctosintro.jpg",
     "categories": ["all", "cinematic"]
   },
   {
     "name": "Watch Dogs 2 Rap",
     "link": "https://www.youtube.com/embed/o_hvTGcbbpM?si=imtB43OvzWSiiLiG",
-    "image": "/assets/media/icons/video3.webp",
+    "image": "/assets/media/videos/thumbnail/videowatchdograp.webp",
     "categories": ["all", "cinematic"]
   }
 ];
