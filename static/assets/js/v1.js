@@ -1,3 +1,4 @@
+// THE VIDEO DATABASE
 const videoList = [
   {
     "name": "Half-Life Rap",
@@ -30,9 +31,9 @@ function renderVideos(filter = "all", query = "") {
 
     if (matchesFilter && matchesQuery) {
       const card = document.createElement("div");
-      // Use "container-card" instead of "column" to avoid unwanted height styles
       card.className = "container-card"; 
       
+      // Create a unique ID for the wrapper to target it on click
       const videoId = `wrapper-${video.name.replace(/\s+/g, '')}`;
 
       card.innerHTML = `
@@ -48,21 +49,36 @@ function renderVideos(filter = "all", query = "") {
 
       card.onclick = () => {
         const wrapper = document.getElementById(videoId);
+        
+        // STOP: If the video or iframe is already inside, don't load it again
+        if (wrapper.querySelector('iframe') || wrapper.querySelector('video')) {
+            return; 
+        }
+
+        // Clear the thumbnail and play icon
+        wrapper.innerHTML = ""; 
+
+        // Load the actual media
         if (video.link.includes("youtube.com") || video.link.includes("embed")) {
+          // YouTube Embed
           wrapper.innerHTML = `<iframe src="${video.link}${video.link.includes('?') ? '&' : '?'}autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
         } else {
-          wrapper.innerHTML = `<video controls autoplay><source src="${video.link}" type="video/mp4"></video>`;
+          // Local MP4
+          wrapper.innerHTML = `<video controls autoplay><source src="${video.link}" type="video/mp4">Your browser does not support the video tag.</video>`;
         }
       };
+      
       container.appendChild(card);
     }
   });
 }
 
+// SEARCH AND CATEGORY FILTERING
 function filterVideos() {
   const query = document.getElementById("search").value;
   const cat = document.getElementById("category").value;
   renderVideos(cat, query);
 }
 
+// Initial Load
 document.addEventListener("DOMContentLoaded", () => renderVideos());
