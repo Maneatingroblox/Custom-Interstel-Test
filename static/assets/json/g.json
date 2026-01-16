@@ -6,15 +6,9 @@
     "custom": "true"
   },
   {
-    "name": "! Interstellar FAQ/Docs",
+    "name": "! Review and request a game!",
     "image": "/assets/media/icons/help_center_googlefonts.png",
-    "link": "https://docs.gointerstellar.app",
-    "categories": ["all"]
-  },
-  {
-    "name": "! [NEW] Request A Game",
-    "link": "https://forms.gle/vwdHN3iPz5cLaHaMA",
-    "image": "/assets/media/icons/request.webp",
+    "link": "https://docs.google.com/forms/d/e/1FAIpQLSd9UTlKtKcpNza8aQ1PgwovPq1kghe3YrTpf-z1XnGU7U0DrQ/viewform",
     "categories": ["all"]
   },
   {
