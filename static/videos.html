@@ -13,96 +13,88 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
-        /* Main Grid Layout */
+        /* 1. The Grid: Control how many rectangles fit per row */
         .apps {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            padding: 20px;
+            /* This prevents skinny columns by ensuring cards are at least 320px wide */
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            padding: 40px;
+            justify-content: center;
         }
 
-        /* The Card */
+        /* 2. The Card: Standard YouTube-style container */
         .container-card {
-            background: #0a0a0a;
-            border: 1px solid #1a1a1a;
-            border-radius: 8px;
-            overflow: hidden;
-            transition: transform 0.2s ease;
+            background: rgba(20, 20, 20, 0.8);
+            /* ctOS dark theme */
+            border: 1px solid #333;
+            transition: 0.3s;
             display: flex;
             flex-direction: column;
-            /* Stacks children vertically */
+            height: fit-content;
+            /* Prevents the card from stretching vertically */
         }
 
         .container-card:hover {
-            transform: translateY(-5px);
             border-color: #ff003c;
+            transform: scale(1.02);
         }
 
-        /* Top Section: Thumbnail/Video */
+        /* 3. The Thumbnail: Force the 16:9 Rectangle */
         .wrapper {
             position: relative;
             width: 100%;
-            aspect-ratio: 16/9;
+            /* This magic trick ensures a 16:9 aspect ratio regardless of image size */
+            aspect-ratio: 16 / 9;
             background: #000;
+            overflow: hidden;
         }
 
+        .wrapper img,
+        .wrapper iframe,
+        .wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Crops the image to fill the rectangle without stretching */
+        }
+
+        /* 4. Play Icon Overlay */
         .play-icon-overlay {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             font-size: 2.5rem;
-            color: rgba(255, 255, 255, 0.6);
-            transition: 0.3s;
+            color: rgba(255, 255, 255, 0.7);
+            z-index: 5;
             pointer-events: none;
-            z-index: 2;
         }
 
-        .container-card:hover .play-icon-overlay {
-            color: #ff003c;
-            transform: translate(-50%, -50%) scale(1.1);
-        }
-
-        /* Bottom Section: Text Info */
+        /* 5. Text Area: Sits neatly below the rectangle */
         .video-info {
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
+            padding: 15px;
+            text-align: left;
         }
 
         .video-title {
-            font-size: 1rem;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
             font-weight: bold;
-            color: #eee;
-            margin: 0;
-            text-transform: uppercase;
-            /* Watch Dogs feel */
-            letter-spacing: 1px;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            /* Limit to 2 lines like YouTube */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
-        .video-meta {
-            font-size: 0.8rem;
-            color: #888;
-            font-family: 'Courier New', Courier, monospace;
-        }
-
-        .video-tag {
-            display: inline-block;
-            background: #1a1a1a;
+        .video-category {
             color: #ff003c;
-            padding: 2px 8px;
-            font-size: 0.7rem;
-            border-radius: 4px;
-            width: fit-content;
-        }
-
-        iframe,
-        video {
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            text-transform: uppercase;
         }
     </style>
 </head>
