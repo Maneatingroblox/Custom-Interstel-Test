@@ -177,6 +177,8 @@ const SplashT = [
   "hacking is our weapon",
   "everything is connected, connection is power.",
   "The future is in Blume.",
+  "search for fnaf in games for fnaf.",
+  "Did you know? You can recommened media and videos in the first link in games.",
 ];
 
 let SplashI = Math.floor(Math.random() * SplashT.length);
