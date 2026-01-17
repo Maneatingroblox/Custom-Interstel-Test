@@ -1,26 +1,26 @@
 [
   {
-    "name": "Cookie Game",
-    "image": "/assets/media/downloadables/icons/cookieplaceholder.jpg",
-    "file" : "/assets/media/downloadables/icons/cookieplaceholder.jpg",
+    "name": "Cookie Clicker Game",
+    "image": "/assets/media/downloadables/icons/TheCookieIcon.webp",
+    "file" : "/assets/media/downloadables/CookieClickerGame.html",
     "categories": ["all", "html", "game"]
   },
   {
-    "name": "Gane Game",
-    "image": "/assets/media/downloadables/icons/cookieplaceholder.jpg",
-    "file" : "/assets/media/downloadables/icons/cookieplaceholder.jpg",
+    "name": "Cookie Clicker Game 2",
+    "image": "/assets/media/downloadables/icons/TheCookieIcon.webp",
+    "file" : "/assets/media/downloadables/CookieClickerGame2.html",
     "categories": ["all", "html", "game"]
   },
   {
-    "name": "Holder Game",
-    "image": "/assets/media/downloadables/icons/cookieplaceholder.png",
-    "file" : "/assets/media/downloadables/icons/cookieplaceholder.png",
+    "name": "Five nights at Winstons",
+    "image": "/assets/media/downloadables/icons/fnafwin.webp",
+    "file" : "/assets/media/downloadables/fnafwin.html",
     "categories": ["all", "html", "game"]
   },
   {
-    "name": "What else do I put here Game",
-    "image": "/assets/media/downloadables/icons/cookieplaceholder.png",
-    "file" : "/assets/media/downloadables/howhardutry.txt",
-    "categories": ["all", "html", "game"]
+    "name": "Advanced Calculator (works with fractions)",
+    "image": "/assets/media/downloadables/icons/calculator.webp",
+    "file" : "/assets/media/downloadables/AdvancedCalculator.html",
+    "categories": ["all", "html", "app"]
   }
 ]

@@ -1,5 +1,21 @@
 async function loadDownloads() {
-    const response = await fetch('/assets/json/f.json'); // Path to your json
+    // Add styles programmatically
+    const style = document.createElement('style');
+    style.textContent = `
+        .wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .wrapper {
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Rest of your code...
+    const response = await fetch('/assets/json/f.json');
     const data = await response.json();
     const container = document.querySelector(".apps");
     
@@ -24,7 +40,7 @@ async function loadDownloads() {
         card.onclick = () => {
             const link = document.createElement("a");
             link.href = item.file;
-            link.download = item.file; // Changed from item.name
+            link.download = item.file;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);

@@ -1,0 +1,381 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Cookie Clicker Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #1a0f0a;
+            --bg-panel: #261711;
+            --cookie-brown: #a0522d;
+            --cookie-light: #d2691e;
+            --amber-accent: #f59e0b;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: #fef3c7;
+            overflow: hidden;
+            height: 100vh;
+        }
+        .font-outfit { font-family: 'Outfit', sans-serif; }
+        
+        .cookie {
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle at 30% 30%, #d2691e, #8b4513);
+            border-radius: 50%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6), inset -10px -10px 20px rgba(0,0,0,0.4);
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.05s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            user-select: none;
+            outline: none;
+        }
+        .cookie.active { transform: scale(0.90) !important; }
+        .cookie:hover { transform: scale(1.04); }
+        
+        .chip {
+            position: absolute;
+            background: #3d1f05;
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            box-shadow: inset 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        @keyframes floatText {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-140px); opacity: 0; }
+        }
+        .particle {
+            position: absolute;
+            color: #fcd34d;
+            font-weight: 800;
+            font-size: 1.75rem;
+            pointer-events: none;
+            animation: floatText 0.7s ease-out forwards;
+            z-index: 100;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+        }
+
+        .news-ticker {
+            background: rgba(0,0,0,0.4);
+            border-bottom: 1px solid rgba(245, 158, 11, 0.1);
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .news-content {
+            display: inline-block;
+            padding-left: 100%;
+            animation: ticker 25s linear infinite;
+        }
+        @keyframes ticker {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        .scroll-custom::-webkit-scrollbar { width: 6px; }
+        .scroll-custom::-webkit-scrollbar-track { background: var(--bg-dark); }
+        .scroll-custom::-webkit-scrollbar-thumb { background: #5d3a2b; border-radius: 10px; }
+        .scroll-custom::-webkit-scrollbar-thumb:hover { background: var(--amber-accent); }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row h-screen">
+
+    <!-- Sidebar: Stats -->
+    <div class="w-full md:w-1/4 p-6 bg-[#261711] border-r border-amber-900/20 flex flex-col gap-6 z-10 shadow-2xl">
+        <h1 class="text-3xl font-outfit font-black text-amber-500 italic tracking-tighter flex items-center gap-2">
+            <span class="text-4xl">🍪</span> CC SIMULATOR
+        </h1>
+        
+        <div class="space-y-4">
+            <div class="bg-black/30 p-4 rounded-xl border border-amber-900/10">
+                <p class="text-[10px] uppercase text-amber-700 font-bold tracking-widest mb-1">Lifetime Baked</p>
+                <p id="total-baked" class="text-3xl font-outfit font-black text-amber-100">0</p>
+            </div>
+            <div class="bg-black/30 p-4 rounded-xl border border-amber-900/10">
+                <p class="text-[10px] uppercase text-amber-700 font-bold tracking-widest mb-1">Production Rate</p>
+                <p id="cps-display" class="text-2xl font-outfit font-bold text-amber-400">0.0 <span class="text-sm font-normal text-amber-800 ml-1">CPS</span></p>
+            </div>
+        </div>
+
+        <div class="mt-auto pt-6 border-t border-amber-900/10">
+            <h3 class="text-xs font-bold text-amber-900 uppercase tracking-widest mb-3">Settings</h3>
+            <button onclick="resetGame()" class="w-full py-2 px-4 rounded-lg bg-red-950/20 text-[10px] uppercase font-bold text-red-900 hover:bg-red-900/20 hover:text-red-500 transition-all tracking-widest">Wipe Save File</button>
+            <p class="text-[9px] text-amber-900/40 mt-4 text-center">Version 1.2.0-Alpha • Spacebar Enabled</p>
+        </div>
+    </div>
+
+    <!-- Center: Main Game Area -->
+    <div class="flex-1 flex flex-col relative overflow-hidden bg-[radial-gradient(circle_at_center,_#3d1f05_0%,_#1a0f0a_80%)]">
+        
+        <!-- News Ticker (The Story) -->
+        <div class="news-ticker w-full py-2 z-20">
+            <div id="news-ticker-content" class="news-content text-amber-700 font-bold text-sm italic">
+                You feel like baking some cookies. The world is quiet... for now.
+            </div>
+        </div>
+
+        <div class="flex-1 flex flex-col items-center justify-center p-8">
+            <div id="cookies-container" class="text-center mb-12 z-10 scale-110">
+                <p id="cookie-count" class="text-7xl md:text-9xl font-outfit font-black drop-shadow-[0_10px_10px_rgba(0,0,0,0.8)] text-white">0</p>
+                <div class="h-1 w-24 bg-amber-500 mx-auto my-3 rounded-full opacity-50 shadow-[0_0_15px_#f59e0b]"></div>
+                <p class="text-xl text-amber-500 font-black tracking-[0.4em] uppercase">Cookies</p>
+            </div>
+
+            <div id="cookie-btn" class="cookie" tabindex="0">
+                <!-- Chips -->
+                <div class="chip w-6 h-6 top-8 left-12"></div>
+                <div class="chip w-8 h-8 top-20 right-14"></div>
+                <div class="chip w-5 h-5 bottom-12 left-20"></div>
+                <div class="chip w-7 h-7 top-40 left-8"></div>
+                <div class="chip w-9 h-9 bottom-24 right-10"></div>
+                <div class="chip w-4 h-4 top-14 left-40"></div>
+                <div class="chip w-6 h-6 bottom-40 left-32"></div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <p class="text-amber-900 font-black uppercase tracking-[0.5em] text-xs animate-pulse mb-2">Click or Spacebar</p>
+                <div class="flex gap-1 justify-center opacity-20">
+                    <div class="w-1 h-1 rounded-full bg-amber-500"></div>
+                    <div class="w-1 h-1 rounded-full bg-amber-500"></div>
+                    <div class="w-1 h-1 rounded-full bg-amber-500"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar: Store -->
+    <div class="w-full md:w-1/3 p-6 bg-[#261711] border-l border-amber-900/20 flex flex-col z-10 shadow-2xl">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-outfit font-bold text-amber-500 uppercase tracking-widest">Store</h2>
+            <div class="bg-amber-900/10 px-2 py-1 rounded text-[10px] text-amber-700 font-bold">UPGRADES</div>
+        </div>
+        <div id="store-items" class="flex-1 overflow-y-auto pr-2 space-y-3 scroll-custom">
+            <!-- Store items injected via JS -->
+        </div>
+    </div>
+
+    <script>
+        // --- GAME DATA ---
+        const UPGRADES = [
+            { id: 'cursor', name: 'Reinforced Index', desc: 'Autoclicks every few seconds.', baseCost: 15, baseCps: 0.1, icon: '🖱️' },
+            { id: 'grandma', name: 'Grandma', desc: 'A nice lady to bake more cookies.', baseCost: 100, baseCps: 1, icon: '👵' },
+            { id: 'farm', name: 'Cookie Farm', desc: 'Grows cookie plants from cookie seeds.', baseCost: 1100, baseCps: 8, icon: '🚜' },
+            { id: 'mine', name: 'Chocolate Mine', desc: 'Mines out cookie dough and chips.', baseCost: 12000, baseCps: 47, icon: '⛏️' },
+            { id: 'factory', name: 'Industrial Bakery', desc: 'Mass produces cookies for the masses.', baseCost: 130000, baseCps: 260, icon: '🏭' },
+            { id: 'bank', name: 'Cookie Reserve', desc: 'Generates cookies from interest.', baseCost: 1400000, baseCps: 1400, icon: '🏦' },
+            { id: 'temple', name: 'Sugar Temple', desc: 'The gods demand more chocolate.', baseCost: 20000000, baseCps: 7800, icon: '🏛️' }
+        ];
+
+        const NEWS_HEADLINES = [
+            { minCookies: 0, text: "You feel like baking some cookies. The world is quiet... for now." },
+            { minCookies: 50, text: "Your neighborhood smells vaguely of vanilla and chocolate chips." },
+            { minCookies: 500, text: "Local bakery reports sudden drop in sales; owner 'confused'." },
+            { minCookies: 5000, text: "News: Mysterious individual found baking thousands of cookies in a basement." },
+            { upgradeId: 'grandma', minCount: 1, text: "A local grandma has joined your cause. 'I just like to help,' she says." },
+            { upgradeId: 'grandma', minCount: 10, text: "Grandmas are congregating on your lawn. They brought knitting needles and dough." },
+            { upgradeId: 'factory', minCount: 1, text: "Local climate scientists concerned about new 'sweet' smog coming from the industrial district." },
+            { minCookies: 100000, text: "Cookies are being used as a secondary currency in small towns." },
+            { minCookies: 1000000, text: "Global Economy collapses; Cookie-based standard adopted by major nations." },
+            { upgradeId: 'temple', minCount: 1, text: "Sugar-based religions appearing worldwide. 'The Crumb is Life,' say followers." }
+        ];
+
+        let state = {
+            cookies: 0,
+            totalBaked: 0,
+            upgrades: {}
+        };
+
+        // --- CORE LOGIC ---
+        function save() {
+            localStorage.setItem('cookieStateV2', JSON.stringify(state));
+        }
+
+        function load() {
+            const saved = localStorage.getItem('cookieStateV2');
+            if (saved) {
+                state = { ...state, ...JSON.parse(saved) };
+            }
+            renderStore();
+            updateNews();
+        }
+
+        function calculateCps() {
+            return UPGRADES.reduce((sum, u) => {
+                const count = state.upgrades[u.id] || 0;
+                return sum + (count * u.baseCps);
+            }, 0);
+        }
+
+        function formatNum(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(2) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+            return Math.floor(num).toLocaleString();
+        }
+
+        function updateUI() {
+            const cps = calculateCps();
+            document.getElementById('cookie-count').innerText = formatNum(state.cookies);
+            document.getElementById('total-baked').innerText = formatNum(state.totalBaked);
+            document.getElementById('cps-display').innerHTML = `${cps.toFixed(1)} <span class="text-sm font-normal text-amber-800 ml-1">CPS</span>`;
+
+            UPGRADES.forEach(u => {
+                const count = state.upgrades[u.id] || 0;
+                const cost = Math.floor(u.baseCost * Math.pow(1.15, count));
+                const btn = document.getElementById(`buy-${u.id}`);
+                if (btn) {
+                    const canAfford = state.cookies >= cost;
+                    btn.disabled = !canAfford;
+                    btn.className = `w-full text-left p-4 rounded-xl border flex items-center gap-4 transition-all ${canAfford ? 'bg-amber-900/20 border-amber-800/40 hover:bg-amber-800/40 cursor-pointer shadow-lg' : 'bg-black/20 border-white/5 opacity-40 cursor-not-allowed grayscale'}`;
+                    document.getElementById(`cost-${u.id}`).innerText = formatNum(cost);
+                    document.getElementById(`cost-${u.id}`).className = canAfford ? 'text-amber-400 font-bold' : 'text-red-900/60 font-bold';
+                    document.getElementById(`count-${u.id}`).innerText = count;
+                }
+            });
+        }
+
+        function updateNews() {
+            const availableHeadlines = NEWS_HEADLINES.filter(h => {
+                if (h.upgradeId) {
+                    return (state.upgrades[h.upgradeId] || 0) >= h.minCount;
+                }
+                return state.totalBaked >= h.minCookies;
+            });
+            const latest = availableHeadlines[availableHeadlines.length - 1];
+            if (latest) {
+                const el = document.getElementById('news-ticker-content');
+                if (el.innerText !== latest.text) {
+                    el.innerText = latest.text;
+                }
+            }
+        }
+
+        function spawnParticle(x, y, val) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.innerText = '+' + val;
+            // Center particle on cursor/origin
+            const left = x ? x - 20 : (window.innerWidth / 2) - 20;
+            const top = y ? y - 20 : (window.innerHeight / 2) - 20;
+            p.style.left = left + 'px';
+            p.style.top = top + 'px';
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 700);
+        }
+
+        function handleCookieClick(e) {
+            const cps = calculateCps();
+            const clickPower = 1 + (cps * 0.1); // Clicks give 10% of CPS now for more satisfaction
+            state.cookies += clickPower;
+            state.totalBaked += clickPower;
+            
+            // Interaction feedback
+            const x = e ? e.clientX : null;
+            const y = e ? e.clientY : null;
+            spawnParticle(x, y, formatNum(clickPower));
+            
+            updateUI();
+            updateNews();
+        }
+
+        function buyUpgrade(id) {
+            const u = UPGRADES.find(x => x.id === id);
+            const count = state.upgrades[id] || 0;
+            const cost = Math.floor(u.baseCost * Math.pow(1.15, count));
+
+            if (state.cookies >= cost) {
+                state.cookies -= cost;
+                state.upgrades[id] = count + 1;
+                updateUI();
+                updateNews();
+                save();
+            }
+        }
+
+        function renderStore() {
+            const container = document.getElementById('store-items');
+            container.innerHTML = UPGRADES.map(u => {
+                const count = state.upgrades[u.id] || 0;
+                const cost = Math.floor(u.baseCost * Math.pow(1.15, count));
+                return `
+                    <button id="buy-${u.id}" onclick="buyUpgrade('${u.id}')">
+                        <div class="text-3xl bg-black/30 p-2 rounded-lg">${u.icon}</div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-bold text-amber-100 group-hover:text-amber-400">${u.name}</h3>
+                                    <p class="text-[9px] text-amber-700 uppercase font-black leading-tight">${u.desc}</p>
+                                </div>
+                                <span id="count-${u.id}" class="text-2xl font-black text-amber-900/30">${count}</span>
+                            </div>
+                            <div class="flex items-center gap-3 mt-2 text-xs">
+                                <span id="cost-${u.id}" class="font-bold">🍪 ${formatNum(cost)}</span>
+                                <span class="text-amber-900/60 font-mono">+${u.baseCps} CPS</span>
+                            </div>
+                        </div>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function resetGame() {
+            if (confirm('WIPE ALL COOKIE DATA? This cannot be undone.')) {
+                state = { cookies: 0, totalBaked: 0, upgrades: {} };
+                localStorage.removeItem('cookieStateV2');
+                renderStore();
+                updateUI();
+                updateNews();
+            }
+        }
+
+        // --- INITIALIZATION ---
+        const cookieBtn = document.getElementById('cookie-btn');
+        
+        // Mouse Listeners
+        cookieBtn.addEventListener('mousedown', () => cookieBtn.classList.add('active'));
+        cookieBtn.addEventListener('mouseup', () => cookieBtn.classList.remove('active'));
+        cookieBtn.addEventListener('mouseleave', () => cookieBtn.classList.remove('active'));
+        cookieBtn.addEventListener('click', handleCookieClick);
+
+        // Keyboard Listeners (Spacebar)
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault(); // Prevent page scroll
+                if (!e.repeat) {
+                    cookieBtn.classList.add('active');
+                    handleCookieClick();
+                }
+            }
+        });
+        window.addEventListener('keyup', (e) => {
+            if (e.code === 'Space') {
+                cookieBtn.classList.remove('active');
+            }
+        });
+
+        load();
+        updateUI();
+
+        // Game loop: Passive income every 100ms
+        setInterval(() => {
+            const cps = calculateCps();
+            if (cps > 0) {
+                const delta = cps / 10;
+                state.cookies += delta;
+                state.totalBaked += delta;
+                updateUI();
+            }
+        }, 100);
+
+        // Periodic News Check
+        setInterval(updateNews, 5000);
+
+        // Auto-save every 10 seconds
+        setInterval(save, 10000);
+    </script>
+</body>
+</html>

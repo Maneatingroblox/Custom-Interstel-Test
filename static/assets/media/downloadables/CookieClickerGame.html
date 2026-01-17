@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Midnight Bakery | Smooth Edition</title>
+    <style>
+        :root {
+            --bg-color: #0f0a05;
+            --panel-color: #1e140b;
+            --accent-color: #d35400;
+            --highlight: #f39c12;
+            --text-color: #f5ebe0;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none; /* Prevents text highlighting while clicking */
+        }
+
+        /* --- Left Side: Visual Bakery --- */
+        #bakery-visuals {
+            width: 200px;
+            background: #160f08;
+            border-right: 2px solid #332211;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        .visual-row {
+            background: rgba(255,255,255,0.05);
+            margin-bottom: 8px;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .unit-icons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            margin-top: 5px;
+            font-size: 1.2rem;
+        }
+
+        /* --- Center: The Cookie --- */
+        #center-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: radial-gradient(circle, #2c1e12 0%, #0f0a05 100%);
+        }
+
+        #cookie-wrapper {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #main-cookie {
+            width: 280px; height: 280px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 8px solid #3d2b1f;
+            transition: transform 0.05s ease-out;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            -webkit-user-drag: none; /* Critical fix */
+        }
+
+        #main-cookie:active { transform: scale(0.92); }
+
+        /* --- Right Side: Store --- */
+        #right-panel {
+            width: 350px;
+            background-color: var(--panel-color);
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            border-left: 2px solid #332211;
+        }
+
+        .store-header { padding: 20px; text-align: center; }
+
+        .tab-container { display: flex; background: #160f08; }
+        .tab { 
+            flex: 1; padding: 15px; text-align: center; 
+            cursor: pointer; font-size: 0.8rem; font-weight: bold;
+            border-bottom: 3px solid transparent;
+        }
+        .tab.active { background: var(--panel-color); border-bottom-color: var(--accent-color); }
+
+        .store-list { overflow-y: auto; flex: 1; padding: 15px; }
+
+        .store-item {
+            background: #2d1f14;
+            margin-bottom: 10px;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #3d2b1f;
+        }
+        .store-item:hover { background: #3d2b1f; border-color: var(--highlight); }
+        .store-item.disabled { opacity: 0.4; cursor: not-allowed; filter: grayscale(1); }
+
+        .price { color: #f1c40f; font-weight: bold; }
+
+        /* --- Animations --- */
+        .shaking { animation: shake 0.15s infinite; }
+        @keyframes shake { 0%{transform: translate(2px,1px)} 50%{transform: translate(-2px,-1px)} 100%{transform: translate(2px,1px)} }
+        
+        .floating-num {
+            position: absolute; color: white; font-weight: bold; pointer-events: none;
+            animation: floatUp 0.8s forwards ease-out; z-index: 10;
+        }
+        @keyframes floatUp { 0%{transform: translateY(0); opacity:1;} 100%{transform: translateY(-120px); opacity:0;} }
+
+        #prestige-screen {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bakery-visuals">
+        <h3 style="font-size: 0.9rem; text-align: center; color: #888;">PRODUCTION</h3>
+        <div id="visual-container"></div>
+    </div>
+
+    <div id="center-panel">
+        <div id="story-text" style="position: absolute; top: 40px; font-style: italic; color: #888;">"The oven is preheated..."</div>
+        <div id="cookie-count" style="font-size: 3rem; font-weight: bold; color: var(--highlight);">0</div>
+        <div id="cps-val" style="margin-bottom: 30px; letter-spacing: 1px;">0 Cookies / sec</div>
+        
+        <div id="cookie-wrapper">
+            <img id="main-cookie" 
+                 src="https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chocolate-chunk-cookies_0-6f27241.jpg" 
+                 draggable="false" 
+                 onmousedown="bake(event)">
+        </div>
+    </div>
+
+    <div id="right-panel">
+        <div class="store-header">
+            <h2 style="margin:0; font-size: 1.2rem;">BAKERY SHOP</h2>
+        </div>
+        <div class="tab-container">
+            <div id="tab-units" class="tab active" onclick="switchTab('units')">STAFF</div>
+            <div id="tab-upgrades" class="tab" onclick="switchTab('upgrades')">UPGRADES</div>
+        </div>
+        <div id="store-content" class="store-list"></div>
+    </div>
+
+    <div id="prestige-screen">
+        <h1 style="color:#e74c3c; font-size: 3rem;">THE BATCH CRUMBLED!</h1>
+        <p style="max-width: 500px;">Your bakery reached critical mass. The cookies have achieved sentience and restarted the timeline.</p>
+        <button onclick="prestige()" style="margin-top:20px; padding: 15px 40px; background: var(--accent-color); color: white; border: none; cursor: pointer; font-size: 1.2rem; border-radius: 5px;">RESTART WITH 2x POWER</button>
+    </div>
+
+    <script>
+        let cookies = 0;
+        let totalEver = 0;
+        let multiplier = 1;
+        let clickPower = 1;
+        let currentTab = 'units';
+        let spaceDown = false;
+
+        const units = [
+            { id: 'grandma', name: 'Baker Grandma', cost: 15, cps: 1, icon: '👵', count: 0 },
+            { id: 'farm', name: 'Cookie Farm', cost: 100, cps: 8, icon: '🚜', count: 0 },
+            { id: 'mine', name: 'Choco Mine', cost: 1100, cps: 47, icon: '⛏️', count: 0 },
+            { id: 'factory', name: 'Mega Factory', cost: 12000, cps: 260, icon: '🏭', count: 0 },
+            { id: 'bank', name: 'Cookie Bank', cost: 130000, cps: 1400, icon: '🏦', count: 0 }
+        ];
+
+        const upgrades = [
+            { id: 'click1', name: 'Reinforced Mouse', cost: 100, desc: 'Clicking x2', type: 'click', mult: 2, bought: false },
+            { id: 'auto1', name: 'Fresh Coffee', cost: 500, desc: 'Grandmas x2', target: 'grandma', type: 'auto', mult: 2, bought: false },
+            { id: 'click2', name: 'Steel Fingers', cost: 2500, desc: 'Clicking x5', type: 'click', mult: 5, bought: false },
+            { id: 'auto2', name: 'Power Drills', cost: 10000, desc: 'Mines x2', target: 'mine', type: 'auto', mult: 2, bought: false }
+        ];
+
+        function bake(e) {
+            if (e) e.preventDefault();
+            const gain = clickPower * multiplier;
+            cookies += gain;
+            totalEver += gain;
+            
+            // Floating text
+            const x = e ? e.clientX : window.innerWidth / 2;
+            const y = e ? e.clientY : window.innerHeight / 2;
+            createPop(x, y, `+${gain.toFixed(0)}`);
+            
+            updateUI();
+        }
+
+        function createPop(x, y, txt) {
+            const div = document.createElement('div');
+            div.className = 'floating-num';
+            div.style.left = `${x}px`;
+            div.style.top = `${y}px`;
+            div.innerText = txt;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 800);
+        }
+
+        function updateUI() {
+            document.getElementById('cookie-count').innerText = Math.floor(cookies).toLocaleString();
+            
+            let currentCps = 0;
+            units.forEach(u => {
+                let uCps = u.count * u.cps;
+                upgrades.filter(up => up.bought && up.target === u.id).forEach(up => uCps *= up.mult);
+                currentCps += uCps;
+            });
+            
+            document.getElementById('cps-val').innerText = `${(currentCps * multiplier).toFixed(1)} Cookies / sec`;
+            
+            // Check story & prestige
+            if (totalEver > 1000000) {
+                document.getElementById('main-cookie').classList.add('shaking');
+                if (totalEver > 1100000) triggerEnd();
+            }
+
+            renderStore();
+            renderVisuals();
+        }
+
+        function renderStore() {
+            const container = document.getElementById('store-content');
+            container.innerHTML = '';
+
+            if (currentTab === 'units') {
+                units.forEach(u => {
+                    const cost = Math.floor(u.cost * Math.pow(1.15, u.count));
+                    const item = document.createElement('div');
+                    item.className = `store-item ${cookies < cost ? 'disabled' : ''}`;
+                    item.innerHTML = `<div><b>${u.icon} ${u.name}</b><br><small>${u.count} owned</small></div><div class="price">${cost.toLocaleString()}</div>`;
+                    item.onclick = () => { if(cookies >= cost) { cookies -= cost; u.count++; updateUI(); } };
+                    container.appendChild(item);
+                });
+            } else {
+                upgrades.forEach(u => {
+                    if (u.bought) return;
+                    const item = document.createElement('div');
+                    item.className = `store-item ${cookies < u.cost ? 'disabled' : ''}`;
+                    item.innerHTML = `<div><b>${u.name}</b><br><small>${u.desc}</small></div><div class="price">${u.cost.toLocaleString()}</div>`;
+                    item.onclick = () => { 
+                        if(cookies >= u.cost) { 
+                            cookies -= u.cost; u.bought = true; 
+                            if(u.type === 'click') clickPower *= u.mult;
+                            updateUI(); 
+                        } 
+                    };
+                    container.appendChild(item);
+                });
+            }
+        }
+
+        function renderVisuals() {
+            const container = document.getElementById('visual-container');
+            container.innerHTML = '';
+            units.forEach(u => {
+                if(u.count > 0) {
+                    const row = document.createElement('div');
+                    row.className = 'visual-row';
+                    row.innerHTML = `<small>${u.name}s</small><div class="unit-icons">${u.icon.repeat(Math.min(u.count, 15))}</div>`;
+                    container.appendChild(row);
+                }
+            });
+        }
+
+        function switchTab(t) {
+            currentTab = t;
+            document.getElementById('tab-units').classList.toggle('active', t === 'units');
+            document.getElementById('tab-upgrades').classList.toggle('active', t === 'upgrades');
+            renderStore();
+        }
+
+        function triggerEnd() {
+            document.getElementById('main-cookie').style.transition = '2s';
+            document.getElementById('main-cookie').style.transform = 'scale(0) rotate(720deg)';
+            document.getElementById('main-cookie').style.opacity = '0';
+            setTimeout(() => { document.getElementById('prestige-screen').style.display = 'flex'; }, 1500);
+        }
+
+        function prestige() {
+            cookies = 0; totalEver = 0; multiplier *= 2; clickPower = 1;
+            units.forEach(u => u.count = 0);
+            upgrades.forEach(u => u.bought = false);
+            document.getElementById('prestige-screen').style.display = 'none';
+            const mc = document.getElementById('main-cookie');
+            mc.style.transition = '0.05s';
+            mc.style.transform = 'scale(1)';
+            mc.style.opacity = '1';
+            mc.classList.remove('shaking');
+            updateUI();
+        }
+
+        // --- Event Listeners ---
+        window.addEventListener('keydown', e => {
+            if(e.code === 'Space' && !spaceDown) {
+                spaceDown = true;
+                bake();
+            }
+        });
+        window.addEventListener('keyup', e => { if(e.code === 'Space') spaceDown = false; });
+
+        // Game Loop (Production)
+        setInterval(() => {
+            let totalCps = 0;
+            units.forEach(u => {
+                let uCps = u.count * u.cps;
+                upgrades.filter(up => up.bought && up.target === u.id).forEach(up => uCps *= up.mult);
+                totalCps += uCps;
+            });
+            if (totalCps > 0) {
+                const step = (totalCps * multiplier) / 10;
+                cookies += step;
+                totalEver += step;
+                // Only update text to save performance, render full UI less often
+                document.getElementById('cookie-count').innerText = Math.floor(cookies).toLocaleString();
+            }
+        }, 100);
+
+        // Slow UI refresh for shop status (colors)
+        setInterval(renderStore, 500);
+
+        updateUI();
+    </script>
+</body>
+</html>

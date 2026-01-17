@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Multi-Calculator</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --success: #27ae60;
+            --warning: #e67e22;
+            --bg: #ecf0f1;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .main-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: #ddd;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .tab-btn.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Standard Calculator Styles */
+        #display {
+            width: 100%;
+            height: 60px;
+            font-size: 2rem;
+            text-align: right;
+            margin-bottom: 15px;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .calc-btn {
+            padding: 20px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #f1f1f1;
+            transition: 0.2s;
+        }
+
+        .calc-btn:hover { background: #e0e0e0; }
+        .op-btn { background: var(--accent); color: white; }
+        .equal-btn { background: var(--success); color: white; grid-column: span 2; }
+
+        /* Fraction Lab Styles */
+        .fraction-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .frac-input { width: 60px; padding: 10px; text-align: center; border-radius: 5px; border: 1px solid #ccc; }
+        .line { border-top: 2px solid #333; margin: 5px 0; }
+        
+        .help-box {
+            background: #fff8e1;
+            border-left: 5px solid var(--warning);
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('standard')">Standard Advanced</button>
+        <button class="tab-btn" onclick="showTab('fractions')">Fraction Lab</button>
+    </div>
+
+    <div id="standard-calc">
+        <input type="text" id="display" disabled>
+        <div class="grid">
+            <button class="calc-btn" onclick="clearDisplay()">C</button>
+            <button class="calc-btn" onclick="appendToDisplay('(')">(</button>
+            <button class="calc-btn" onclick="appendToDisplay(')')">)</button>
+            <button class="calc-btn op-btn" onclick="appendToDisplay('/')">/</button>
+            
+            <button class="calc-btn" onclick="appendToDisplay('7')">7</button>
+            <button class="calc-btn" onclick="appendToDisplay('8')">8</button>
+            <button class="calc-btn" onclick="appendToDisplay('9')">9</button>
+            <button class="calc-btn op-btn" onclick="appendToDisplay('*')">×</button>
+            
+            <button class="calc-btn" onclick="appendToDisplay('4')">4</button>
+            <button class="calc-btn" onclick="appendToDisplay('5')">5</button>
+            <button class="calc-btn" onclick="appendToDisplay('6')">6</button>
+            <button class="calc-btn op-btn" onclick="appendToDisplay('-')">-</button>
+            
+            <button class="calc-btn" onclick="appendToDisplay('1')">1</button>
+            <button class="calc-btn" onclick="appendToDisplay('2')">2</button>
+            <button class="calc-btn" onclick="appendToDisplay('3')">3</button>
+            <button class="calc-btn op-btn" onclick="appendToDisplay('+')">+</button>
+            
+            <button class="calc-btn" onclick="appendToDisplay('0')">0</button>
+            <button class="calc-btn" onclick="appendToDisplay('.')">.</button>
+            <button class="calc-btn equal-btn" onclick="calculateStandard()">=</button>
+        </div>
+    </div>
+
+    <div id="fraction-calc" class="hidden">
+        <div class="fraction-row">
+            <div>
+                <input type="number" id="fn1" class="frac-input" placeholder="Num">
+                <div class="line"></div>
+                <input type="number" id="fd1" class="frac-input" placeholder="Den">
+            </div>
+            
+            <select id="fOp" style="font-size: 1.5rem; padding: 5px;">
+                <option value="+">+</option>
+                <option value="-">−</option>
+                <option value="*">×</option>
+                <option value="/">÷</option>
+            </select>
+
+            <div>
+                <input type="number" id="fn2" class="frac-input" placeholder="Num">
+                <div class="line"></div>
+                <input type="number" id="fd2" class="frac-input" placeholder="Den">
+            </div>
+        </div>
+
+        <button class="calc-btn equal-btn" style="width:100%" onclick="calculateFractions()">Solve & Simplify</button>
+        <button class="calc-btn" style="width:100%; margin-top:10px; background:var(--warning); color:white" onclick="toggleHelp()">Explain the Steps</button>
+
+        <div id="fResult" style="margin-top:20px; text-align:center; font-size:1.2rem;"></div>
+        
+        <div id="helpBox" class="help-box">
+            <h4>Step-by-Step Logic:</h4>
+            <p id="helpContent">Perform a calculation to see the explanation.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab Switching
+    function showTab(tab) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        if(tab === 'standard') {
+            document.getElementById('standard-calc').classList.remove('hidden');
+            document.getElementById('fraction-calc').classList.add('hidden');
+            document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        } else {
+            document.getElementById('standard-calc').classList.add('hidden');
+            document.getElementById('fraction-calc').classList.remove('hidden');
+            document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        }
+    }
+
+    // Standard Logic
+    function appendToDisplay(val) { document.getElementById('display').value += val; }
+    function clearDisplay() { document.getElementById('display').value = ''; }
+    function calculateStandard() {
+        try {
+            document.getElementById('display').value = eval(document.getElementById('display').value);
+        } catch {
+            document.getElementById('display').value = "Error";
+        }
+    }
+
+    // Fraction Logic
+    function gcd(a, b) { return b ? gcd(b, a % b) : a; }
+
+    function toggleHelp() {
+        const box = document.getElementById('helpBox');
+        box.style.display = box.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function calculateFractions() {
+        const n1 = parseInt(document.getElementById('fn1').value);
+        const d1 = parseInt(document.getElementById('fd1').value);
+        const n2 = parseInt(document.getElementById('fn2').value);
+        const d2 = parseInt(document.getElementById('fd2').value);
+        const op = document.getElementById('fOp').value;
+
+        if ([n1, d1, n2, d2].some(isNaN) || d1 === 0 || d2 === 0) {
+            alert("Enter valid numbers. Denominator cannot be 0.");
+            return;
+        }
+
+        let resN, resD, step;
+
+        if (op === '+') {
+            resN = (n1 * d2) + (n2 * d1);
+            resD = d1 * d2;
+            step = "To add, we found a common denominator by multiplying the bottoms. Then we cross-multiplied and added the tops.";
+        } else if (op === '-') {
+            resN = (n1 * d2) - (n2 * d1);
+            resD = d1 * d2;
+            step = "To subtract, we found a common denominator and subtracted the new numerators.";
+        } else if (op === '*') {
+            resN = n1 * n2;
+            resD = d1 * d2;
+            step = "Multiplication is simple: Multiply top × top and bottom × bottom.";
+        } else {
+            resN = n1 * d2;
+            resD = d1 * n2;
+            step = "To divide, we used 'Keep-Change-Flip': we multiplied the first fraction by the reciprocal (flipped version) of the second.";
+        }
+
+        const common = Math.abs(gcd(resN, resD));
+        const sn = resN / common;
+        const sd = resD / common;
+
+        let mixed = "";
+        if (Math.abs(sn) >= sd) {
+            const whole = Math.trunc(sn / sd);
+            const rem = Math.abs(sn % sd);
+            mixed = rem === 0 ? `<br>Whole Number: <b>${whole}</b>` : `<br>Mixed Number: <b>${whole} & ${rem}/${sd}</b>`;
+        }
+
+        document.getElementById('fResult').innerHTML = `
+            Result: ${resN}/${resD} <br>
+            <strong>Simplified (Least Equal): ${sn}/${sd}</strong>
+            ${mixed}
+        `;
+
+        document.getElementById('helpContent').innerHTML = `
+            ${step}<br><br>
+            <strong>Simplification:</strong> We divided both numbers by their Greatest Common Divisor (${common}) to find the least equal version: ${sn}/${sd}.
+        `;
+    }
+</script>
+</body>
+</html>
