@@ -24,7 +24,7 @@ async function loadDownloads() {
         card.onclick = () => {
             const link = document.createElement("a");
             link.href = item.file;
-            link.download = item.name; // Use the name from JSON as filename
+            link.download = item.file; // Changed from item.name
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
