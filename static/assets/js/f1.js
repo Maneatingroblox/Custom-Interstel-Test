@@ -1,6 +1,4 @@
 async function loadDownloads() {
-    // We remove the injected <style> block because you should link your style.css in the HTML <head> instead.
-    
     try {
         const response = await fetch('/assets/json/f.json');
         if (!response.ok) throw new Error('Failed to fetch data');
@@ -16,11 +14,12 @@ async function loadDownloads() {
         container.innerHTML = "";
 
         data.forEach(item => {
-            // Create the main card container
             const card = document.createElement("div");
-            card.className = "column"; 
+            card.className = "column";
             
-            // This structure now matches your CSS selectors (.column img and .column p)
+            // Store categories as a data attribute for filtering
+            card.setAttribute('data-categories', item.categories.join(','));
+            
             card.innerHTML = `
                 <img src="${item.image}" alt="${item.name}" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22145%22 height=%22145%22%3E%3Crect fill=%22%23ccc%22 width=%22145%22 height=%22145%22/%3E%3C/svg%3E'">
                 <p>${item.name}</p>
@@ -46,21 +45,42 @@ async function loadDownloads() {
     }
 }
 
-function bar() {
-    const input = document.getElementById('search');
-    if (!input) return;
+function filterFiles() {
+    const searchInput = document.getElementById('search');
+    const categorySelect = document.getElementById('category');
     
-    const searchValue = input.value.toLowerCase();
+    if (!searchInput || !categorySelect) return;
+    
+    const searchValue = searchInput.value.toLowerCase();
+    const categoryValue = categorySelect.value.toLowerCase();
     const cards = document.getElementsByClassName('column');
 
     for (let i = 0; i < cards.length; i++) {
-        // Updated search to look inside the <p> tag within .column
         const nameElement = cards[i].querySelector('p');
+        const categories = cards[i].getAttribute('data-categories') || '';
+        
+        let nameMatch = true;
+        let categoryMatch = true;
+        
+        // Check name match
         if (nameElement) {
             const name = nameElement.innerText.toLowerCase();
-            cards[i].style.display = name.includes(searchValue) ? "" : "none";
+            nameMatch = name.includes(searchValue);
         }
+        
+        // Check category match
+        if (categoryValue !== 'all') {
+            categoryMatch = categories.includes(categoryValue);
+        }
+        
+        // Show card only if both filters match
+        cards[i].style.display = (nameMatch && categoryMatch) ? "" : "none";
     }
+}
+
+// Keep the old bar() function name for compatibility with onkeyup in HTML
+function bar() {
+    filterFiles();
 }
 
 document.addEventListener("DOMContentLoaded", loadDownloads);
