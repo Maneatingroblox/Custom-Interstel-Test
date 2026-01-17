@@ -2,14 +2,18 @@ async function loadDownloads() {
     // Add styles programmatically
     const style = document.createElement('style');
     style.textContent = `
-        .wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
         .wrapper {
-            aspect-ratio: 1 / 1;
+            width: 150px;
+            height: 150px;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .wrapper img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
         }
     `;
     document.head.appendChild(style);
@@ -36,7 +40,6 @@ async function loadDownloads() {
             </div>
         `;
 
-        // The Download Trigger
         card.onclick = () => {
             const link = document.createElement("a");
             link.href = item.file;
