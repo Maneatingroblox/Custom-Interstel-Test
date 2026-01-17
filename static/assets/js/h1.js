@@ -179,6 +179,7 @@ const SplashT = [
   "The future is in Blume.",
   "search for fnaf in games for fnaf.",
   "Did you know? You can recommened media and videos in the first link in games.",
+  "WE HAVE FNF. STOP ASKING.",
 ];
 
 let SplashI = Math.floor(Math.random() * SplashT.length);

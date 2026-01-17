@@ -18,6 +18,12 @@
     "categories": ["all", "html", "game"]
   },
   {
+    "name": "Minecraft 1.12",
+    "image": "/assets/media/downloadables/icons/minecraft.webp",
+    "file" : "/assets/media/downloadables/minecraft112.html",
+    "categories": ["all", "html", "game"]
+  },
+  {
     "name": "Advanced Calculator (works with fractions)",
     "image": "/assets/media/downloadables/icons/calculator.webp",
     "file" : "/assets/media/downloadables/AdvancedCalculator.html",
